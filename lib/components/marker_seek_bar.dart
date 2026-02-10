@@ -22,6 +22,7 @@ class MarkerSeekBar extends StatefulWidget {
 class _MarkerSeekBarState extends State<MarkerSeekBar> {
   static const double segmentGap = 3.0;
   static const double segmentHeight = 6.0;
+  static const double expandedSegmentHeight = 10.0;
 
   bool isScrubbing = false;
   double scrubMilliseconds = 0;
@@ -58,8 +59,9 @@ class _MarkerSeekBarState extends State<MarkerSeekBar> {
               var left = 0.0;
 
               return SizedBox(
-                height: segmentHeight,
+                height: expandedSegmentHeight,
                 child: Stack(
+                  alignment: AlignmentGeometry.center,
                   children: List.generate(segmentCount, (index) {
                     final startMilliseconds = bounds[index].inMilliseconds;
                     final endMilliseconds = bounds[index+1].inMilliseconds;
@@ -70,15 +72,18 @@ class _MarkerSeekBarState extends State<MarkerSeekBar> {
                           ? 1.0
                           : (cursorMilliseconds - startMilliseconds) / (endMilliseconds - startMilliseconds);
 
+                    final height = isScrubbing
+                        ? fillRatio != 0.0 && fillRatio != 1.0 ? expandedSegmentHeight : segmentHeight
+                        : segmentHeight;
+
                     final x = left;
                     left += width + segmentGap;
 
                     return Positioned(
                       left: x,
-                      top: 0,
                       child: Container(
                         width: width,
-                        height: segmentHeight,
+                        height: height,
                         clipBehavior: Clip.hardEdge,
                         decoration: BoxDecoration(color: Colors.white),
                         alignment: Alignment.centerLeft,
